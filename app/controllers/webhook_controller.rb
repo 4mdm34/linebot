@@ -11,7 +11,6 @@ class WebhookController < ApplicationController
         end
         
         event = params["events"][0]
-        logger.info({from_line: result})
         event_type = event["type"]
         replyToken = event["replyToken"]
         
