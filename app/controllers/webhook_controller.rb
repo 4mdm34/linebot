@@ -12,8 +12,6 @@ class WebhookController < ApplicationController
         
         event = params["events"][0]
         logger.info({from_line: result})
-        #text_message = result['content']['text']
-        #from_mid = result['content']['from']
         event_type = event["type"]
         replyToken = event["replyToken"]
         
@@ -24,7 +22,6 @@ class WebhookController < ApplicationController
         end
 
         client = Lineclient.new(CHANNEL_ACCESS_TOKEN, OUTBOUND_PROXY)
-        #res = client.send([from_mid], text_message)
         res = client.reply(replyToken, output_text)
         
         if res.status == 200
@@ -32,6 +29,7 @@ class WebhookController < ApplicationController
         else
             logger.info({fail: res})
         end
+        
         render :nothing => true, status: :ok
      end
      
@@ -39,7 +37,7 @@ class WebhookController < ApplicationController
      # LINEからのアクセスか確認
      # 認証に成功すればtrueを返す
      def is_validate_signature
-         signature = request.headers["X-LINE-ChannelSignature"]
+         signature = request.headers["X-LINE-Signature"]
          http_request_body = request.raw_post
          hash = OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new, CHANNEL_SECRET, http_request_body)
          signature_answer = Base64.strict_encode64(hash)

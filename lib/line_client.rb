@@ -1,7 +1,6 @@
 require "faraday"
 require "faraday_middleware"
 require "json"
-require "pp"
 
 class LineClient
     END_POINT = "https://api.line.me"
@@ -19,10 +18,10 @@ class LineClient
             conn.proxy @proxy
         end
         
-        res = clinet.post do |request|
+        res = client.post do |request|
             request.url path
             request.headers = {
-                'ContentType' => 'application/json; charset=UTF-8',
+                'Content-type' => 'application/json',
                 'Authorization' => "Bearer #{@channel_access_token}"
             }
             request.body = data
@@ -43,18 +42,5 @@ class LineClient
             "messages" => messages
         }
         post('/v2/bot/message/reply', body.to_json)
-    end
-    
-    def send(line_ids, message)
-        post('/v1/events',{
-            to: line_ids,
-            content: {
-                contentType: ContentType::TEXT,
-                toType: ToType::USER,
-                text: message
-            },
-            toChannel: TO_CHANNEL,
-            eventType: EVENT_TYPE
-        })
     end
 end
