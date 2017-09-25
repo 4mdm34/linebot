@@ -1,4 +1,8 @@
 class WebhookController < ApplicationController
+    
+# line_clientを追加\
+require 'line_client'
+
      protect_from_forgery with: :null_session # CSRF対策無効化
      
      CHANNEL_SECRET = ENV['LINE_CHANNEL_SECRET']
